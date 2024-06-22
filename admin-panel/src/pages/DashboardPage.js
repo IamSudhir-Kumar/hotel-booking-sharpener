@@ -1,28 +1,27 @@
 import React from 'react';
-import Header from '../components/Layout/Header';
-import Sidebar from '../components/Layout/Sidebar';
-import { Switch, Route } from 'react-router-dom';
-import CategoryList from '../components/Categories/CategoryList';
-import CategoryForm from '../components/Categories/CategoryForm';
-import ListingList from '../components/Listings/ListingList';
-import ListingForm from '../components/Listings/ListingForm';
-import BookingList from '../components/Bookings/BookingList';
+import { Route, Routes } from 'react-router-dom';
+import Header from '../components/layout/Header';
+import Sidebar from '../components/layout/Sidebar';
+import CategoryList from '../components/categories/CategoryList';
+import CategoryForm from '../components/categories/CategoryForm';
+import ListingList from '../components/listings/ListingList';
+import ListingForm from '../components/listings/ListingForm';
+import BookingList from '../components/bookings/BookingList';
 
 const DashboardPage = () => {
   return (
-    <div className="flex min-h-screen">
+    <div className="flex h-screen bg-gray-100">
       <Sidebar />
-      <div className="flex-1">
+      <div className="flex-1 flex flex-col">
         <Header />
-        <main className="p-6">
-          <Switch>
+        <main className="flex-1 overflow-auto p-6">
+          <Routes>
             <Route path="/categories" component={CategoryList} />
             <Route path="/add-category" component={CategoryForm} />
             <Route path="/listings" component={ListingList} />
             <Route path="/add-listing" component={ListingForm} />
             <Route path="/bookings" component={BookingList} />
-            <Route path="/" exact component={() => <h1>Dashboard</h1>} />
-          </Switch>
+          </Routes>
         </main>
       </div>
     </div>

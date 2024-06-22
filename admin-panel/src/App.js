@@ -1,18 +1,15 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
-import PrivateRoute from './components/PrivateRoute';
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <Switch>
-        <Route path="/login" component={LoginPage} />
-        <PrivateRoute path="/" component={DashboardPage} />
-      </Switch>
-    </div>
+    <Routes>
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/dashboard/*" element={<DashboardPage />} />
+    </Routes>
   );
-}
+};
 
 export default App;

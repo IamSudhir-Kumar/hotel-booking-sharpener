@@ -1,25 +1,18 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { logoutUser } from '../../redux/authSlice';
+import { logout } from '../../redux/authSlice';
 
 const Header = () => {
   const dispatch = useDispatch();
 
   const handleLogout = () => {
-    dispatch(logoutUser());
+    dispatch(logout());
   };
 
   return (
-    <header className="bg-white shadow">
-      <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-gray-900">Admin Panel</h1>
-        <button
-          onClick={handleLogout}
-          className="bg-red-500 text-white px-3 py-2 rounded-md text-sm font-medium"
-        >
-          Logout
-        </button>
-      </div>
+    <header className="bg-white shadow-sm p-4 flex justify-between items-center">
+      <h1 className="text-xl font-bold">Admin Panel</h1>
+      <button onClick={handleLogout} className="text-red-500">Logout</button>
     </header>
   );
 };

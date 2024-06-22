@@ -1,54 +1,46 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { db, storage } from '../firebase/firebase';
-import { collection, getDocs, addDoc, doc, deleteDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { getListings, removeListing, addListing } from '../firebase/firebase';
 
-export const fetchListings = createAsyncThunk(
-  'listings/fetchListings',
-  async () => {
-    const querySnapshot = await getDocs(collection(db, 'listings'));
-    return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-  }
-);
+export const fetchListings = createAsyncThunk('listings/fetchListings', async () => {
+  const response = await getListings();
+  return response;
+});
 
-export const addListing = createAsyncThunk(
-  'listings/addListing',
-  async (newListing) => {
-    const imagesURLs = await Promise.all(
-      newListing.images.map(async (image) => {
-        const storageRef = ref(storage, `images/${image.name}`);
-        await uploadBytes(storageRef, image);
-        return await getDownloadURL(storageRef);
-      })
-    );
-    const listingWithImages = { ...newListing, images: imagesURLs };
-    const docRef = await addDoc(collection(db, 'listings'), listingWithImages);
-    return { id: docRef.id, ...listingWithImages };
-  }
-);
+export const deleteListing = createAsyncThunk('listings/deleteListing', async (id) => {
+  await removeListing(id);
+  return id;
+});
+
+export const createListing = createAsyncThunk('listings/createListing', async (listing) => {
+  await addListing(listing);
+});
 
 const listingSlice = createSlice({
   name: 'listings',
   initialState: {
     items: [],
-    status: 'idle',
+    loading: false,
     error: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchListings.pending, (state) => {
-        state.status = 'loading';
+        state.loading = true;
+        state.error = null;
       })
       .addCase(fetchListings.fulfilled, (state, action) => {
-        state.status = 'succeeded';
+        state.loading = false;
         state.items = action.payload;
       })
       .addCase(fetchListings.rejected, (state, action) => {
-        state.status = 'failed';
+        state.loading = false;
         state.error = action.error.message;
       })
-      .addCase(addListing.fulfilled, (state, action) => {
+      .addCase(deleteListing.fulfilled, (state, action) => {
+        state.items = state.items.filter((listing) => listing.id !== action.payload);
+      })
+      .addCase(createListing.fulfilled, (state, action) => {
         state.items.push(action.payload);
       });
   },
